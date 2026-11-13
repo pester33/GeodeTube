@@ -3,7 +3,7 @@
 - "latest": newest videos from the channels in channels.txt (YouTube's public RSS feeds, no API key needed)
 - "gdgl":   record videos from the GD Gaming List (List-Mod backup data)
 """
-import json, re, sys, urllib.request, xml.etree.ElementTree as ET
+import json, os, re, sys, urllib.request, xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) GeodeTubeFeed/1.0",
@@ -89,14 +89,14 @@ def main():
         try:
             cid = channel_id(h)
             if not cid:
-                print(f"! {h}: channel not found", file=sys.stderr)
+                print(f"::warning::{h}: channel not found")
                 continue
             vids = channel_videos(cid)
             latest += vids
             channels.append({"handle": h, "id": cid, "name": vids[0]["channel"] if vids else h})
-            print(f"+ {h}: {len(vids)} videos")
+            print(f"::notice::{h} -> {cid}: {len(vids)} videos")
         except Exception as ex:
-            print(f"! {h}: {ex}", file=sys.stderr)
+            print(f"::warning::{h}: {ex}")
 
     seen, uniq = set(), []
     for v in sorted(latest, key=lambda v: v["published"], reverse=True):
@@ -109,7 +109,7 @@ def main():
         gdgl = gdgl_videos()
         print(f"+ GDGL: {len(gdgl)} record videos")
     except Exception as ex:
-        print(f"! GDGL: {ex}", file=sys.stderr)
+        print(f"::warning::GDGL: {ex}")
         gdgl = []
 
     if not latest and not gdgl:
@@ -120,10 +120,11 @@ def main():
         "channels": channels,
         "videos": latest + gdgl,
     }
+    os.makedirs("data", exist_ok=True)
     with open("data/feed.json", "w", encoding="utf-8") as f:
         json.dump(feed, f, ensure_ascii=False, indent=1)
         f.write("\n")
-    print(f"Saved {len(latest)} latest + {len(gdgl)} GDGL videos")
+    print(f"::notice::Saved {len(latest)} latest + {len(gdgl)} GDGL videos")
 
 
 if __name__ == "__main__":
