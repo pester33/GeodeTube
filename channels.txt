@@ -1,0 +1,11 @@
+# GD YouTube channels shown in GeodeTube's "Latest" feed.
+# One per line: a YouTube @handle (or a channel ID starting with UC).
+# Lines starting with # are ignored. The feed refreshes every 2 hours.
+@RobTopGames
+@GDColon
+@Wulzy
+@Viprin
+@npesta
+@Doggie
+@EVW
+@GDZoink
