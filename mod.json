@@ -6,7 +6,7 @@
 	},
 	"id": "pester.geodetube",
 	"name": "GeodeTube",
-	"version": "v1.0.1",
+	"version": "v1.0.2",
 	"developer": "Pester",
 	"description": "Scroll the newest GD YouTube videos and GD Gaming List records right inside GD.",
 	"tags": [
