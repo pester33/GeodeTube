@@ -1,15 +1,18 @@
 {
-	"geode": "6.0.0-alpha.1",
+	"geode": "6.0.0",
 	"gd": {
 		"win": "2.2091",
 		"android": "2.2091"
 	},
 	"id": "pester.geodetube",
 	"name": "GeodeTube",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "Pester",
 	"description": "Scroll the newest GD YouTube videos and GD Gaming List records right inside GD.",
-	"tags": ["online", "interface"],
+	"tags": [
+		"online",
+		"interface"
+	],
 	"settings": {
 		"menu-button": {
 			"type": "bool",

@@ -10,6 +10,15 @@
 
 using namespace geode::prelude;
 
+// Geode 6 (GD 2.2091) and Geode 5 (GD 2.2081) take different time types for timeouts
+static void setTimeout(web::WebRequest& req, int secs) {
+#if GEODE_COMP_GD_VERSION >= 22091
+    req.timeout(asp::Duration::fromSecs(secs));
+#else
+    req.timeout(std::chrono::seconds(secs));
+#endif
+}
+
 // Feed built every 2 hours by the "Update video feed" GitHub Action (channels.txt + GD Gaming List)
 static constexpr auto FEED_URL = "https://raw.githubusercontent.com/pester33/GeodeTube/main/data/feed.json";
 
@@ -258,7 +267,7 @@ protected:
         m_status->setVisible(true);
 
         web::WebRequest req;
-        req.timeout(std::chrono::seconds(20));
+        setTimeout(req, 20);
         m_task.spawn(req.get(FEED_URL), [this](web::WebResponse res) {
             if (!res.ok()) {
                 log::warn("[GeodeTube] Feed failed: HTTP {}", res.code());
@@ -462,7 +471,7 @@ static void installUpdate(std::string version) {
     loading->show();
 
     web::WebRequest req;
-    req.timeout(std::chrono::seconds(90));
+    setTimeout(req, 90);
     s_updateTask.spawn(req.get(url), [loading = Ref(loading), version](web::WebResponse res) {
         s_updateBusy = false;
         loading->hide();
@@ -496,7 +505,7 @@ static void checkForUpdate(bool isRetry = false) {
     log::info("[updater] Checking {} (current {})", url, Mod::get()->getVersion().toVString());
 
     web::WebRequest req;
-    req.timeout(std::chrono::seconds(20));
+    setTimeout(req, 20);
     s_updateTask.spawn(req.get(url), [isRetry](web::WebResponse res) {
         s_updateBusy = false;
         auto body = utils::string::trim(res.string().unwrapOr(""));
